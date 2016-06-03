@@ -27,3 +27,12 @@ $sed 1d saq.csv > saqnoheader.csv
 $cat lcbo.csv saqnoheader.csv > scotch.csv
 
 4. Open the "scotch.csv" and go find your Scotch!
+
+To run the above in one command, clone this project, or download it, and run the command runScotch.sh.
+
+Don't forget to:
+
+$chmod +x runScotch.sh
+$./runScotch.sh
+
+if it doesn't work.
