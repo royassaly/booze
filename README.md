@@ -33,6 +33,7 @@ To run the above in one command, clone this project, or download it, and run the
 Don't forget to:
 
 $chmod +x runScotch.sh
+
 $./runScotch.sh
 
 if it doesn't work.
