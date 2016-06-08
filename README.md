@@ -10,6 +10,8 @@ If you know nothing technical, then let me save you some time. If you want to bu
 2. Wine: LCBO
 3. Beer: Anywhere in Quebec is cheaper than Ontario.
 
+Or, just open the file "scotch.csv" in any spreadsheet software or text editor.
+
 Technical Workings:
 
 If you are interested in how this works, Scrapy from (Scrapy.org) is a tool that allows you to read a website, and extract, or scrape the information that you need. After you scrape it, you can save it to .CSV (Excel friendly), JSON, or any other database. The sky is the limit really.

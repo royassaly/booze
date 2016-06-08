@@ -1,4 +1,5 @@
 import scrapy
+import unicodedata
 
 from booze.items import BoozeItem
 
@@ -26,15 +27,11 @@ class SaqSpider(scrapy.Spider):
             item['title'] = sel.xpath("//h1/text()").extract()
             item['link'] = response.url
             item['price'] = sel.xpath("//p[@class='price']/text()").extract()
+            volume = []
+            # Use the details information <div>
+            # response.xpath("//div[@class='left']/child::span[text()='Size']/parent::div/../div/text()").extract()[0].strip()
+            # Note the word "Size", as we can reuse this for region, alcohol, etc.
+            volume = sel.xpath("//div[@class='left']/child::span[text()='Size']/parent::div/../div/text()").extract()[0].strip()
+            # returns the u'750\xa0ml' which has some garbage data in it which needs to be removed below
+            item['volume'] = unicodedata.normalize("NFKD", volume)            
             yield item
-            
-   
-''' WORKING FROM MAIN PAGE LIST
-    def parse(self, response):
-        for sel in response.xpath("//div[@id='resultatRecherche']"):
-            item = BoozeItem()
-            item['title'] = sel.xpath("div/div/div[@class='wapProduit']/p/a/text()").extract()
-            item['link'] = sel.xpath("div/div/div[@class='wapProduit']/p/a/@href").extract()
-            item['price'] = sel.xpath("//td[@class='price']/a/text()").extract()
-            yield item
-'''
