@@ -14,5 +14,7 @@ class BoozeItem(scrapy.Item):
     link = scrapy.Field()
     price = scrapy.Field()
     volume = scrapy.Field()
+    sale = scrapy.Field()
+    savings = scrapy.Field()
     # TODO, add UPC, Alcohol %, and size of bottle in mL
     # upc = scrapy.Field()

@@ -12,8 +12,10 @@ class SaqSpider(scrapy.Spider):
        "http://www.saq.com/webapp/wcs/stores/servlet/SearchDisplay?searchType=&orderBy=1&categoryIdentifier=050806&showOnly=product&langId=-1&beginIndex=0&tri=&pageSize=100&pageView=List&catalogId=50000&sensTri=&facet=&storeId=20002",
         # 100 to 200 List of booze
        "http://www.saq.com/webapp/wcs/stores/servlet/SearchDisplay?searchType=&orderBy=1&categoryIdentifier=050806&showOnly=product&langId=-1&beginIndex=100&tri=&pageSize=100&pageView=List&catalogId=50000&sensTri=&facet=&storeId=20002",
-        # 200+ List of booze
-        "http://www.saq.com/webapp/wcs/stores/servlet/SearchDisplay?searchType=&orderBy=1&categoryIdentifier=050806&showOnly=product&langId=-1&beginIndex=200&tri=&pageSize=100&pageView=List&catalogId=50000&sensTri=&facet=&storeId=20002"
+        # 200 to 212 List of booze
+        "http://www.saq.com/webapp/wcs/stores/servlet/SearchDisplay?searchType=&orderBy=1&categoryIdentifier=050806&showOnly=product&langId=-1&beginIndex=200&tri=&pageSize=100&pageView=List&catalogId=50000&sensTri=&facet=&storeId=20002",
+        # 48 Scotch Whisky Blend e.g. Johnnie Walker
+        "http://www.saq.com/webapp/wcs/stores/servlet/SearchDisplay?searchType=&orderBy=&categoryIdentifier=050803&showOnly=product&langId=-1&beginIndex=0&tri=&pageSize=100&pageView=&catalogId=50000&searchTerm=*&sensTri=&facet=&storeId=20002"
   ]
 
     def parse(self, response):
@@ -33,5 +35,7 @@ class SaqSpider(scrapy.Spider):
             # Note the word "Size", as we can reuse this for region, alcohol, etc.
             volume = sel.xpath("//div[@class='left']/child::span[text()='Size']/parent::div/../div/text()").extract()[0].strip()
             # returns the u'750\xa0ml' which has some garbage data in it which needs to be removed below
-            item['volume'] = unicodedata.normalize("NFKD", volume)            
+            item['volume'] = unicodedata.normalize("NFKD", volume)
+            item['sale'] = ''
+            item['savings'] = ''
             yield item
