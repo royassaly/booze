@@ -16,5 +16,5 @@ class BoozeItem(scrapy.Item):
     volume = scrapy.Field()
     sale = scrapy.Field()
     savings = scrapy.Field()
-    # TODO, add UPC, Alcohol %, and size of bottle in mL
+    # TODO, add Category of booze, Alcohol %, UPC, etc.
     # upc = scrapy.Field()

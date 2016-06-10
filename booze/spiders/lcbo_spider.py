@@ -6,10 +6,12 @@ from booze.items import BoozeItem
 class LcboSpider(scrapy.Spider):
     name = "lcbo"
     allowed_domains = ["lcbo.com"]
-    # Scotch, Scotch Whisky Blend
-    categories = [11086, 11083]
+    # Scotch, Scotch Whisky Blend = [11086, 11083], All Scotch and Whisky = [11014]
+    categories = [11014]
     start_urls = [
-      'http://www.lcbo.com/lcbo/catalog/scotch-single-malts/{}?contentBeginIndex=0&productBeginIndex=%s&beginIndex=%s&orderBy=&categoryPath=spirits/whisky-whiskey/scotch-single-malts&orderByContent=&facet=&storeId=10151&catalogId=10001&langId=-1&requesttype=ajax'.format(c) %(n*12, n*12) for n in range(0, 12) for c in categories
+      # FOR TESTING:
+      #'http://www.lcbo.com/lcbo/catalog/scotch-single-malts/{}?contentBeginIndex=0&productBeginIndex=%s&beginIndex=%s&orderBy=&categoryPath=spirits/whisky-whiskey/scotch-single-malts&orderByContent=&facet=&storeId=10151&catalogId=10001&langId=-1&requesttype=ajax'.format(c) %(n*12, n*12) for n in range(0, 12) for c in categories
+      'http://www.lcbo.com/lcbo/catalog/scotch-single-malts/{}?contentBeginIndex=0&productBeginIndex=%s&beginIndex=%s&orderBy=&categoryPath=spirits/whisky-whiskey/scotch-single-malts&orderByContent=&facet=&storeId=10151&catalogId=10001&langId=-1&requesttype=ajax'.format(c) %(n*12, n*12) for n in range(0, 42) for c in categories
     ]
 
     def parse(self, response):
@@ -21,8 +23,8 @@ class LcboSpider(scrapy.Spider):
         item = BoozeItem()
         volume = []
         price = 0
-        rangeVolume = len(" bottle")
-        rangePrice = len(" ")
+        rangeVolumeBottle = len(" bottle")
+        rangeVolumeGift = len(" gift")
         item['sale'] = ''
         item['savings'] = ''
         savings = 0
@@ -35,11 +37,13 @@ class LcboSpider(scrapy.Spider):
             item['sale'] = "On sale!"
             savings = response.xpath("//span[@class='saving']/text()").extract()[0]
             item['savings'] = savings[5:]  
-        item['price'] = response.xpath("//div/strong/text()").extract()[0]
+        item['price'] = price[0]
         volume = response.xpath("//dt[@class='product-volume']/text()").extract()
         
-        # u'750 mL bottle', u'750 mL bottle',
-        # truncate the text " bottle" at tend of each string in the array
-        # Sometimes the LCBO puts "750 mL gift" instead of "750 ml bottle". Weird. Fix it later.
-        item['volume'] = [elem[:len(elem) - rangeVolume] for elem in volume]          
+        # u'750 mL bottle'
+        # truncate the text " bottle" at tend of each string
+        # Sometimes the LCBO puts "750 mL gift" instead of "750 ml bottle". Weird. FIX ME!
+        if "gift" in volume[0]:
+          item['volume'] = [elem[:len(elem) - rangeVolumeGift] for elem in volume]
+        item['volume'] = [elem[:len(elem) - rangeVolumeBottle] for elem in volume]          
         yield item
