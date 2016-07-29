@@ -31,13 +31,11 @@ class LcboSpider(scrapy.Spider):
         
         item['title'] = response.xpath("//div/h1/text()").extract()[0].strip()
         item['link'] = response.url
-        price = response.xpath("//div/strong/text()").extract()
-        if len(price) == 2:
-          if 'Limited Time Offer' in price[1]:
+        item['price'] = response.xpath("//span[@class='price-value']/text()").extract()[0].strip()
+        savings = response.xpath("//small[@class='saving']/text()").extract()
+        if len(savings) == 2:
             item['sale'] = "On sale!"
-            savings = response.xpath("//span[@class='saving']/text()").extract()[0]
-            item['savings'] = savings[5:]  
-        item['price'] = price[0]
+            item['savings'] = savings[1]
         volume = response.xpath("//dt[@class='product-volume']/text()").extract()
         
         # u'750 mL bottle'
