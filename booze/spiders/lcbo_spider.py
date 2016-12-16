@@ -11,11 +11,11 @@ class LcboSpider(scrapy.Spider):
     start_urls = [
       # FOR TESTING:
       #'http://www.lcbo.com/lcbo/catalog/scotch-single-malts/{}?contentBeginIndex=0&productBeginIndex=%s&beginIndex=%s&orderBy=&categoryPath=spirits/whisky-whiskey/scotch-single-malts&orderByContent=&facet=&storeId=10151&catalogId=10001&langId=-1&requesttype=ajax'.format(c) %(n*12, n*12) for n in range(0, 12) for c in categories
-      'http://www.lcbo.com/lcbo/catalog/scotch-single-malts/{}?contentBeginIndex=0&productBeginIndex=%s&beginIndex=%s&orderBy=&categoryPath=spirits/whisky-whiskey/scotch-single-malts&orderByContent=&facet=&storeId=10151&catalogId=10001&langId=-1&requesttype=ajax'.format(c) %(n*12, n*12) for n in range(0, 42) for c in categories
+      'http://www.lcbo.com/lcbo/catalog/scotch-single-malts/{}?contentBeginIndex=0&productBeginIndex=%s&beginIndex=%s&orderBy=&categoryPath=spirits/whisky-whiskey/scotch-single-malts&orderByContent=&facet=&storeId=10151&catalogId=10001&langId=-1&requesttype=ajax'.format(c) %(n*12, n*12) for n in range(0, 52) for c in categories
     ]
 
     def parse(self, response):
-        for href in response.xpath("//div[@class='row products list-view']/div/div[@class='product-name']/a/@href"):
+        for href in response.xpath("//div[@class='product-wrapper']/div[@class='product-name']/a/@href"):
             url = 'http://www.lcbo.com' + href.extract()
             yield scrapy.Request(url, callback=self.parse_dir_contents)
 
