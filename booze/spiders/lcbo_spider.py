@@ -37,11 +37,10 @@ class LcboSpider(scrapy.Spider):
             item['sale'] = "On sale!"
             item['savings'] = savings[1]
         volume = response.xpath("//dt[@class='product-volume']/text()").extract()
+        item['volume'] = volume
         
-        # u'750 mL bottle'
-        # truncate the text " bottle" at tend of each string
+        # u'750 mL'
         # Sometimes the LCBO puts "750 mL gift" instead of "750 ml bottle". Weird. FIX ME!
         if "gift" in volume[0]:
           item['volume'] = [elem[:len(elem) - rangeVolumeGift] for elem in volume]
-        item['volume'] = [elem[:len(elem) - rangeVolumeBottle] for elem in volume]          
         yield item
