@@ -8,11 +8,17 @@ class LcboSpider(scrapy.Spider):
     allowed_domains = ["lcbo.com"]
     # Scotch, Scotch Whisky Blend = [11086, 11083], All Scotch and Whisky = [11014]
     categories = [11014]
+    # Set max value to 60 since there are 60 pages
     start_urls = [
       # FOR TESTING:
       #'http://www.lcbo.com/lcbo/catalog/scotch-single-malts/{}?contentBeginIndex=0&productBeginIndex=%s&beginIndex=%s&orderBy=&categoryPath=spirits/whisky-whiskey/scotch-single-malts&orderByContent=&facet=&storeId=10151&catalogId=10001&langId=-1&requesttype=ajax'.format(c) %(n*12, n*12) for n in range(0, 12) for c in categories
-      'http://www.lcbo.com/lcbo/catalog/scotch-single-malts/{}?contentBeginIndex=0&productBeginIndex=%s&beginIndex=%s&orderBy=&categoryPath=spirits/whisky-whiskey/scotch-single-malts&orderByContent=&facet=&storeId=10151&catalogId=10001&langId=-1&requesttype=ajax'.format(c) %(n*12, n*12) for n in range(0, 52) for c in categories
+      'http://www.lcbo.com/lcbo/catalog/scotch-single-malts/{}?contentBeginIndex=0&productBeginIndex=%s&beginIndex=%s&orderBy=&categoryPath=spirits/whisky-whiskey/scotch-single-malts&orderByContent=&facet=&storeId=10151&catalogId=10001&langId=-1&requesttype=ajax'.format(c) %(n*12, n*12) for n in range(0, 60) for c in categories
     ]
+    
+    custom_settings = {
+    # specifies exported fields and order
+    'FEED_EXPORT_FIELDS': ["title", "alcohol", "volume", "sale", "savings", "price", "link"],
+    }
 
     def parse(self, response):
         for href in response.xpath("//div[@class='product-wrapper']/div[@class='product-name']/a/@href"):
@@ -27,6 +33,7 @@ class LcboSpider(scrapy.Spider):
         rangeVolumeGift = len(" gift")
         item['sale'] = ''
         item['savings'] = ''
+        item['alcohol'] = ''
         savings = 0
         
         item['title'] = response.xpath("//div/h1/text()").extract()[0].strip()
@@ -43,4 +50,9 @@ class LcboSpider(scrapy.Spider):
         # Sometimes the LCBO puts "750 mL gift" instead of "750 ml bottle". Weird. FIX ME!
         if "gift" in volume[0]:
           item['volume'] = [elem[:len(elem) - rangeVolumeGift] for elem in volume]
+          
+        # Get the alcohol % from the product details section 
+        alcohol = response.xpath("//dt[text() = 'Alcohol/Vol']/following-sibling::dd[1]/text()").extract()
+        item['alcohol'] = alcohol
+        
         yield item
