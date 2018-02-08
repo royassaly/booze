@@ -14,7 +14,7 @@ Or, just open the file "scotch.csv" in any spreadsheet software or text editor.
 
 Technical Workings:
 
-If you are interested in how this works, Scrapy from (Scrapy.org) is a tool that allows you to read a website and extract, or scrape the information that you need. After you scrape it, you can save it to .CSV (Excel friendly), JSON, or any other database. The sky is the limit really.
+If you are interested in how this works, Scrapy v1.4 from (Scrapy.org) is a tool that allows you to read a website and extract, or scrape the information that you need. After you scrape it, you can save it to .CSV (Excel friendly), JSON, or any other database. The sky is the limit really.
 
 For this particular interest, a .CSV file will do. This opens nicely in Excel or any other spreadsheet program and let's you see what the LCBO and SAQ have for Scotch, and how much the prices are. Generally speaking, the selection is greater in the SAQ, and the prices are cheaper. A summary of how this code works is:
 
