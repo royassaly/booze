@@ -17,7 +17,7 @@ class LcboSpider(scrapy.Spider):
     
     custom_settings = {
     # specifies exported fields and order
-    'FEED_EXPORT_FIELDS': ["title", "alcohol", "volume", "sale", "savings", "price", "link"],
+    'FEED_EXPORT_FIELDS': ["title", "alcohol", "volume", "sale", "savings", "price", "inventory", "link"],
     }
 
     def parse(self, response):
@@ -34,7 +34,10 @@ class LcboSpider(scrapy.Spider):
         item['sale'] = ''
         item['savings'] = ''
         item['alcohol'] = ''
+        item['inventory'] = ''
         savings = 0
+        checkInventoryURL = ''
+        inventoryPage = []
         
         item['title'] = response.xpath("//div/h1/text()").extract()[0].strip()
         item['link'] = response.url
@@ -55,4 +58,15 @@ class LcboSpider(scrapy.Spider):
         alcohol = response.xpath("//dt[text() = 'Alcohol/Vol']/following-sibling::dd[1]/text()").extract()
         item['alcohol'] = alcohol
         
+        # Check if the item if even available, if not: Sorry, the product you selected is currently not available in any store.
+        checkInventoryURL = response.xpath("//button[@id='check-store-inventory']/@data-modal-content").extract()[0].strip()
+        request =  scrapy.Request(str(checkInventoryURL),callback=self.inventory_parse)
+        request.meta['item'] = item     
+        yield request
+           
+    def inventory_parse(self,response):
+        item = BoozeItem()
+        item = response.meta['item']
+        item['inventory'] = response.xpath("//td[@class='no-inventory']/text()").extract()
         yield item
+        

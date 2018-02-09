@@ -20,7 +20,7 @@ class SaqSpider(scrapy.Spider):
     
     custom_settings = {
     # specifies exported fields and order
-    'FEED_EXPORT_FIELDS': ["title", "alcohol", "volume", "sale", "savings", "price", "link"],
+    'FEED_EXPORT_FIELDS': ["title", "alcohol", "volume", "sale", "savings", "price", "inventory", "link"],
     }
 
     def parse(self, response):
@@ -35,6 +35,8 @@ class SaqSpider(scrapy.Spider):
             item['sale'] = ''
             item['savings'] = ''
             item['alcohol'] = ''
+            # Deal with SAQ inventory - TODO
+            item['inventory'] = ''
             
             item['title'] = response.xpath("//h1/text()").extract()
             item['link'] = response.url
