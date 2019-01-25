@@ -3,16 +3,16 @@ import unicodedata
 
 from booze.items import BoozeItem
 
-class LcboSpider(scrapy.Spider):
-    name = "lcbo"
+class LcboRedWineSpider(scrapy.Spider):
+    name = "lcboredwine"
     allowed_domains = ["lcbo.com"]
-    # Scotch, Scotch Whisky Blend = [11086, 11083], All Scotch and Whisky = [11014]
-    categories = [11014]
-    # Set max value to 66 since there are 66 pages
+    # Red Wine = [11025], White Wine = [11003]
+    categories = [11025]
+    # Set max value to 484 since there are 484 pages
     start_urls = [
       # FOR TESTING:
       #'http://www.lcbo.com/lcbo/catalog/scotch-single-malts/{}?contentBeginIndex=0&productBeginIndex=%s&beginIndex=%s&orderBy=&categoryPath=spirits/whisky-whiskey/scotch-single-malts&orderByContent=&facet=&storeId=10151&catalogId=10001&langId=-1&requesttype=ajax'.format(c) %(n*12, n*12) for n in range(0, 12) for c in categories
-      'http://www.lcbo.com/lcbo/catalog/scotch-single-malts/{}?contentBeginIndex=0&productBeginIndex=%s&beginIndex=%s&orderBy=&categoryPath=spirits/whisky-whiskey/scotch-single-malts&orderByContent=&facet=&storeId=10151&catalogId=10001&langId=-1&requesttype=ajax'.format(c) %(n*12, n*12) for n in range(0, 66) for c in categories
+      'http://www.lcbo.com/lcbo/catalog/red-wine/{}?contentBeginIndex=0&productBeginIndex=%s&beginIndex=%s&orderBy=&categoryPath=wine/red-wine&orderByContent=&facet=&storeId=10151&catalogId=10001&langId=-1&requesttype=ajax'.format(c) %(n*12, n*12) for n in range(0, 484) for c in categories
     ]
     
     custom_settings = {
