@@ -63,6 +63,7 @@ class LcboSpider(scrapy.Spider):
            
        
         volume = response.xpath("//dl[@class='product-details-list']/dd/b/text()").extract()[0].strip()
+        volume = unicodedata.normalize("NFKD", volume)
         item['volume'] = volume[0:len(volume)-rangeVolumeBottle]
           
         # Get the alcohol % from the product details section 
