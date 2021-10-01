@@ -32,35 +32,42 @@ class LcboSpider(scrapy.Spider):
     def parse_dir_contents(self, response):
         item = BoozeItem()
         volume = []
-        price = 0
         rangeVolumeBottle = len(" bottle")
-        rangeVolumeGift = len(" gift")
+        rangePriceSavings = len("Save :")
         item['title'] = ''
         item['sale'] = ''
         item['savings'] = ''
         item['alcohol'] = ''
         item['inventory'] = ''
+        # old_price = 0
         savings = 0
         #checkInventoryURL = ''
         #inventoryPage = []
         
         item['title'] = response.xpath("//div/h1[@role='heading']/text()").extract()[0].strip()
         item['link'] = response.url
-        item['price'] = response.xpath("//span[@class='price']/text()").extract()[0].strip()
-        savings = response.xpath("//small[@class='saving']/text()").extract()
-        if len(savings) == 2:
+        # OLD: item['price'] = response.xpath("//span[@class='price']/text()").extract()[0].strip()
+
+        item['price'] = response.xpath("//div[@class='top namePartPriceContainer']/div/span[@class='price']/text()").extract()[0].strip()
+
+        # old_price = response.xpath("//span[@class='listPrice_old']/text()").extract()
+        # OLD savings = response.xpath("//span[@class='listPrice_save']/text()").extract()
+
+        savings = response.xpath("//div[@class='top namePartPriceContainer']/div/div[@class='listPrice']/span[@class='listPrice_save']/text()")
+                  
+                  
+        if len(savings) > 0:
             item['sale'] = "On sale!"
-            item['savings'] = savings[1]
-        volume = response.xpath("//div[@class='product-details-list']/div/b[text() = 'Bottle Size:']/following-sibling::span[1]/text()").extract()[0].strip()
-        item['volume'] = volume
-        
-        # u'750 mL'
-        # Sometimes the LCBO puts "750 mL gift" instead of "750 ml bottle". Weird. FIX ME!
-        if "gift" in volume[0]:
-          item['volume'] = [elem[:len(elem) - rangeVolumeGift] for elem in volume]
+            savings = response.xpath("//div[@class='top namePartPriceContainer']/div/div[@class='listPrice']/span[@class='listPrice_save']/text()").extract()[0].strip()
+            item['savings'] = savings[rangePriceSavings:]
+           
+       
+        volume = response.xpath("//dl[@class='product-details-list']/dd/b/text()").extract()[0].strip()
+        item['volume'] = volume[0:len(volume)-rangeVolumeBottle]
           
         # Get the alcohol % from the product details section 
-        alcohol = response.xpath("//div[@class='product-details-list']/div/b[text() = 'Alcohol/Vol:']/following-sibling::span[1]/text()").extract()[0].strip()
+        # OLD:  alcohol = response.xpath("//div[@class='product-details-list']/div/b[text() = 'Alcohol/Vol:']/following-sibling::span[1]/text()").extract()[0].strip()
+        alcohol = response.xpath("//dl[@class='product-details-list']/dd/span/text()").extract()[0].strip()
         item['alcohol'] = alcohol
 
         # Rewrite all of the code below. HTML has changed again on the LCBO website.
